@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soumyajit's AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #1a1a24;
+    --border: rgba(255,255,255,0.07);
+    --accent: #7c6aff;
+    --accent2: #ff6ab0;
+    --accent-glow: rgba(124,106,255,0.15);
+    --text: #f0eeff;
+    --muted: rgba(240,238,255,0.45);
+    --user-bubble: linear-gradient(135deg, #7c6aff, #9b6aff);
+    --bot-bubble: #1a1a24;
+    --scrollbar: rgba(124,106,255,0.2);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* Ambient background */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -40%;
+    left: -20%;
+    width: 80%;
+    height: 80%;
+    background: radial-gradient(ellipse, rgba(124,106,255,0.08) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: -30%;
+    right: -10%;
+    width: 60%;
+    height: 60%;
+    background: radial-gradient(ellipse, rgba(255,106,176,0.06) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Header */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 28px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(10,10,15,0.8);
+    backdrop-filter: blur(20px);
+    position: relative;
+    z-index: 10;
+    flex-shrink: 0;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo-icon {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    box-shadow: 0 0 20px rgba(124,106,255,0.4);
+  }
+
+  .logo-text {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    letter-spacing: -0.3px;
+    background: linear-gradient(135deg, var(--text), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .logo-sub {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 300;
+    letter-spacing: 0.5px;
+  }
+
+  .status-pill {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 14px;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #4ade80;
+    box-shadow: 0 0 8px #4ade80;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* Layout */
+  .main {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    width: 260px;
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 20px 16px;
+    gap: 8px;
+    background: rgba(10,10,15,0.6);
+    flex-shrink: 0;
+  }
+
+  .sidebar-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    color: var(--muted);
+    text-transform: uppercase;
+    padding: 0 8px;
+    margin-bottom: 4px;
+  }
+
+  .new-chat-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px dashed rgba(124,106,255,0.3);
+    background: transparent;
+    color: var(--accent);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+    margin-bottom: 8px;
+  }
+
+  .new-chat-btn:hover {
+    background: var(--accent-glow);
+    border-color: var(--accent);
+  }
+
+  .chat-item {
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border: 1px solid transparent;
+  }
+
+  .chat-item:hover, .chat-item.active {
+    background: var(--surface2);
+    color: var(--text);
+    border-color: var(--border);
+  }
+
+  .chat-item.active {
+    border-color: rgba(124,106,255,0.2);
+  }
+
+  .sidebar-bottom {
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .model-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .model-badge span {
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  /* Chat area */
+  .chat-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 32px 0;
+    scroll-behavior: smooth;
+  }
+
+  .messages::-webkit-scrollbar { width: 4px; }
+  .messages::-webkit-scrollbar-track { background: transparent; }
+  .messages::-webkit-scrollbar-thumb { background: var(--scrollbar); border-radius: 4px; }
+
+  .message-wrapper {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 0 28px;
+    animation: fadeUp 0.3s ease forwards;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .message-group {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 28px;
+    align-items: flex-start;
+  }
+
+  .message-group.user {
+    flex-direction: row-reverse;
+  }
+
+  .avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+  }
+
+  .avatar.bot {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    box-shadow: 0 0 16px rgba(124,106,255,0.3);
+  }
+
+  .avatar.user {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .bubble {
+    max-width: calc(100% - 100px);
+    padding: 14px 18px;
+    border-radius: 14px;
+    font-size: 14.5px;
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  .bubble.bot {
+    background: var(--bot-bubble);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 4px 14px 14px 14px;
+  }
+
+  .bubble.user {
+    background: var(--user-bubble);
+    color: white;
+    border-radius: 14px 4px 14px 14px;
+    font-weight: 400;
+    box-shadow: 0 4px 20px rgba(124,106,255,0.25);
+  }
+
+  /* Welcome screen */
+  .welcome {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    padding: 40px 28px;
+    text-align: center;
+    gap: 24px;
+  }
+
+  .welcome-icon {
+    width: 72px;
+    height: 72px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    box-shadow: 0 0 40px rgba(124,106,255,0.3);
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .welcome h1 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 32px;
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, var(--text), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .welcome p {
+    color: var(--muted);
+    font-size: 15px;
+    max-width: 400px;
+    line-height: 1.6;
+  }
+
+  .suggestions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    width: 100%;
+    max-width: 520px;
+    margin-top: 8px;
+  }
+
+  .suggestion-card {
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .suggestion-card:hover {
+    border-color: rgba(124,106,255,0.4);
+    background: var(--surface2);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(124,106,255,0.1);
+  }
+
+  .suggestion-card .s-icon { font-size: 18px; margin-bottom: 6px; }
+  .suggestion-card .s-title { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
+  .suggestion-card .s-sub { font-size: 11px; color: var(--muted); }
+
+  /* Input area */
+  .input-area {
+    padding: 16px 28px 24px;
+    background: rgba(10,10,15,0.8);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .input-wrapper {
+    max-width: 780px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .input-box {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 12px 14px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .input-box:focus-within {
+    border-color: rgba(124,106,255,0.4);
+    box-shadow: 0 0 0 3px rgba(124,106,255,0.08);
+  }
+
+  textarea {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14.5px;
+    font-weight: 300;
+    resize: none;
+    max-height: 140px;
+    line-height: 1.6;
+    padding: 2px 0;
+  }
+
+  textarea::placeholder { color: var(--muted); }
+
+  .send-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s;
+    box-shadow: 0 4px 12px rgba(124,106,255,0.3);
+  }
+
+  .send-btn:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(124,106,255,0.4); }
+  .send-btn:active { transform: scale(0.97); }
+  .send-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  .send-btn svg { width: 16px; height: 16px; fill: white; }
+
+  .input-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+    font-size: 11px;
+    color: var(--muted);
+    gap: 6px;
+  }
+
+  /* Typing indicator */
+  .typing {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    padding: 14px 18px;
+    background: var(--bot-bubble);
+    border: 1px solid var(--border);
+    border-radius: 4px 14px 14px 14px;
+    width: fit-content;
+  }
+
+  .typing span {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: bounce 1.2s infinite;
+  }
+
+  .typing span:nth-child(2) { animation-delay: 0.2s; }
+  .typing span:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes bounce {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+    30% { transform: translateY(-6px); opacity: 1; }
+  }
+
+  /* N8N config panel */
+  .config-btn {
+    padding: 7px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    font-size: 12px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .config-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(8px);
+    z-index: 100;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 28px;
+    width: 480px;
+    max-width: 90vw;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+    animation: fadeUp 0.3s ease;
+  }
+
+  .modal h2 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    margin-bottom: 6px;
+  }
+
+  .modal p { color: var(--muted); font-size: 13px; margin-bottom: 24px; }
+
+  .form-group { margin-bottom: 16px; }
+  .form-group label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; font-weight: 500; letter-spacing: 0.3px; }
+
+  .form-group input {
+    width: 100%;
+    padding: 10px 14px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13.5px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .form-group input:focus { border-color: rgba(124,106,255,0.5); }
+  .form-group input::placeholder { color: var(--muted); }
+
+  .modal-actions { display: flex; gap: 10px; margin-top: 24px; }
+
+  .btn-primary {
+    flex: 1;
+    padding: 11px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border: none;
+    color: white;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .btn-primary:hover { opacity: 0.9; }
+
+  .btn-secondary {
+    padding: 11px 20px;
+    border-radius: 10px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+  @media (max-width: 700px) {
+    .sidebar { display: none; }
+    .welcome h1 { font-size: 24px; }
+    .suggestions { grid-template-columns: 1fr; }
+    .bubble { max-width: calc(100% - 60px); }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">✦</div>
+    <div>
+      <div class="logo-text">Soumyajit's AI</div>
+      <div class="logo-sub">Powered by n8n + Groq</div>
+    </div>
+  </div>
+  <div style="display:flex;gap:10px;align-items:center;">
+    <div class="status-pill">
+      <div class="status-dot"></div>
+      Online
+    </div>
+    <button class="config-btn" onclick="openConfig()">
+      ⚙️ Connect n8n
+    </button>
+  </div>
+</header>
+
+<div class="main">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-label">Chats</div>
+    <button class="new-chat-btn" onclick="newChat()">
+      <span>＋</span> New Chat
+    </button>
+    <div class="chat-item active" id="current-chat">New conversation</div>
+    <div class="sidebar-bottom">
+      <div class="model-badge">
+        🤖 Model: <span>Groq / Llama</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chat area -->
+  <div class="chat-area">
+    <div class="messages" id="messages">
+      <!-- Welcome screen -->
+      <div class="message-wrapper" id="welcome-screen">
+        <div class="welcome">
+          <div class="welcome-icon">✦</div>
+          <h1>Hey, I'm Soumyajit's AI</h1>
+          <p>Your personal AI assistant. Ask me anything — I can search the web, answer questions, and help you with tasks.</p>
+          <div class="suggestions">
+            <div class="suggestion-card" onclick="suggest('Who is the captain of Team India cricket?')">
+              <div class="s-icon">🏏</div>
+              <div class="s-title">Cricket update</div>
+              <div class="s-sub">Who is the captain of India?</div>
+            </div>
+            <div class="suggestion-card" onclick="suggest('What is the weather like today?')">
+              <div class="s-icon">🌤️</div>
+              <div class="s-title">Weather today</div>
+              <div class="s-sub">Check current conditions</div>
+            </div>
+            <div class="suggestion-card" onclick="suggest('Latest news in technology today')">
+              <div class="s-icon">📰</div>
+              <div class="s-title">Tech news</div>
+              <div class="s-sub">Latest updates in tech</div>
+            </div>
+            <div class="suggestion-card" onclick="suggest('Help me write a professional email')">
+              <div class="s-icon">✉️</div>
+              <div class="s-title">Write an email</div>
+              <div class="s-sub">Professional templates</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input area -->
+    <div class="input-area">
+      <div class="input-wrapper">
+        <div class="input-box">
+          <textarea
+            id="input"
+            placeholder="Ask me anything..."
+            rows="1"
+            onkeydown="handleKey(event)"
+            oninput="autoResize(this)"
+          ></textarea>
+          <button class="send-btn" id="send-btn" onclick="sendMessage()">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+            </svg>
+          </button>
+        </div>
+        <div class="input-footer">
+          ✦ Soumyajit's AI may make mistakes. Verify important info.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Config Modal -->
+<div class="modal-overlay" id="config-modal">
+  <div class="modal">
+    <h2>Connect Your n8n</h2>
+    <p>Enter your n8n webhook URL to connect this interface to your workflow backend.</p>
+    <div class="form-group">
+      <label>N8N WEBHOOK URL</label>
+      <input type="url" id="webhook-url" placeholder="https://your-n8n.app/webhook/xxx" />
+    </div>
+    <div class="form-group">
+      <label>SESSION ID (optional — for memory)</label>
+      <input type="text" id="session-id" placeholder="user-soumyajit-001" value="user-soumyajit-001" />
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeConfig()">Cancel</button>
+      <button class="btn-primary" onclick="saveConfig()">✓ Save & Connect</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  let webhookUrl = localStorage.getItem('n8n_webhook') || '';
+  let sessionId = localStorage.getItem('n8n_session') || 'user-soumyajit-001';
+  let isTyping = false;
+  let chatHistory = [];
+  let welcomeHidden = false;
+
+  // Init
+  if (webhookUrl) {
+    document.getElementById('webhook-url').value = webhookUrl;
+  }
+
+  function openConfig() {
+    document.getElementById('webhook-url').value = webhookUrl;
+    document.getElementById('session-id').value = sessionId;
+    document.getElementById('config-modal').classList.add('open');
+  }
+
+  function closeConfig() {
+    document.getElementById('config-modal').classList.remove('open');
+  }
+
+  function saveConfig() {
+    webhookUrl = document.getElementById('webhook-url').value.trim();
+    sessionId = document.getElementById('session-id').value.trim() || 'user-soumyajit-001';
+    localStorage.setItem('n8n_webhook', webhookUrl);
+    localStorage.setItem('n8n_session', sessionId);
+    closeConfig();
+  }
+
+  function autoResize(el) {
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight, 140) + 'px';
+  }
+
+  function handleKey(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  }
+
+  function suggest(text) {
+    document.getElementById('input').value = text;
+    sendMessage();
+  }
+
+  function hideWelcome() {
+    if (!welcomeHidden) {
+      document.getElementById('welcome-screen').style.display = 'none';
+      welcomeHidden = true;
+    }
+  }
+
+  function addMessage(role, text) {
+    hideWelcome();
+    const messages = document.getElementById('messages');
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'message-wrapper';
+
+    const group = document.createElement('div');
+    group.className = `message-group ${role}`;
+
+    const avatar = document.createElement('div');
+    avatar.className = `avatar ${role}`;
+    avatar.textContent = role === 'bot' ? '✦' : 'S';
+
+    const bubble = document.createElement('div');
+    bubble.className = `bubble ${role}`;
+    bubble.textContent = text;
+
+    group.appendChild(avatar);
+    group.appendChild(bubble);
+    wrapper.appendChild(group);
+    messages.appendChild(wrapper);
+    messages.scrollTop = messages.scrollHeight;
+
+    // Update sidebar
+    if (role === 'user' && chatHistory.length === 0) {
+      document.getElementById('current-chat').textContent = text.slice(0, 30) + (text.length > 30 ? '…' : '');
+    }
+
+    chatHistory.push({ role, text });
+    return bubble;
+  }
+
+  function showTyping() {
+    hideWelcome();
+    const messages = document.getElementById('messages');
+    const wrapper = document.createElement('div');
+    wrapper.className = 'message-wrapper';
+    wrapper.id = 'typing-indicator';
+
+    const group = document.createElement('div');
+    group.className = 'message-group bot';
+
+    const avatar = document.createElement('div');
+    avatar.className = 'avatar bot';
+    avatar.textContent = '✦';
+
+    const typing = document.createElement('div');
+    typing.className = 'typing';
+    typing.innerHTML = '<span></span><span></span><span></span>';
+
+    group.appendChild(avatar);
+    group.appendChild(typing);
+    wrapper.appendChild(group);
+    messages.appendChild(wrapper);
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+  function removeTyping() {
+    const el = document.getElementById('typing-indicator');
+    if (el) el.remove();
+  }
+
+  async function sendMessage() {
+    const input = document.getElementById('input');
+    const text = input.value.trim();
+    if (!text || isTyping) return;
+
+    if (!webhookUrl) {
+      openConfig();
+      return;
+    }
+
+    input.value = '';
+    input.style.height = 'auto';
+    isTyping = true;
+    document.getElementById('send-btn').disabled = true;
+
+    addMessage('user', text);
+    showTyping();
+
+    try {
+      const response = await fetch("/api/chat", {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: text,
+          sessionId: sessionId,
+          chatInput: text
+        })
+      });
+
+      const data = await response.json();
+      removeTyping();
+
+      // Try common n8n output field names
+      const reply =
+        data?.output ||
+        data?.text ||
+        data?.message ||
+        data?.response ||
+        data?.[0]?.output ||
+        data?.[0]?.text ||
+        JSON.stringify(data);
+
+      addMessage('bot', reply);
+
+    } catch (err) {
+      removeTyping();
+      addMessage('bot', '⚠️ Could not reach your n8n webhook. Please check your URL in the settings and make sure your workflow is active.');
+    }
+
+    isTyping = false;
+    document.getElementById('send-btn').disabled = false;
+    document.getElementById('input').focus();
+  }
+
+  function newChat() {
+    chatHistory = [];
+    welcomeHidden = false;
+    const messages = document.getElementById('messages');
+    messages.innerHTML = `
+      <div class="message-wrapper" id="welcome-screen">
+        <div class="welcome">
+          <div class="welcome-icon">✦</div>
+          <h1>Hey, I'm Soumyajit's AI</h1>
+          <p>Your personal AI assistant. Ask me anything — I can search the web, answer questions, and help you with tasks.</p>
+          <div class="suggestions">
+            <div class="suggestion-card" onclick="suggest('Who is the captain of Team India cricket?')">
+              <div class="s-icon">🏏</div>
+              <div class="s-title">Cricket update</div>
+              <div class="s-sub">Who is the captain of India?</div>
+            </div>
+            <div class="suggestion-card" onclick="suggest('What is the weather like today?')">
+              <div class="s-icon">🌤️</div>
+              <div class="s-title">Weather today</div>
+              <div class="s-sub">Check current conditions</div>
+            </div>
+            <div class="suggestion-card" onclick="suggest('Latest news in technology today')">
+              <div class="s-icon">📰</div>
+              <div class="s-title">Tech news</div>
+              <div class="s-sub">Latest updates in tech</div>
+            </div>
+            <div class="suggestion-card" onclick="suggest('Help me write a professional email')">
+              <div class="s-icon">✉️</div>
+              <div class="s-title">Write an email</div>
+              <div class="s-sub">Professional templates</div>
+            </div>
+          </div>
+        </div>
+      </div>`;
+    document.getElementById('current-chat').textContent = 'New conversation';
+  }
+
+  // Auto-open config if no webhook set
+  if (!webhookUrl) {
+    setTimeout(openConfig, 800);
+  }
+
+  // Focus input on load
+  document.getElementById('input').focus();
+</script>
+</body>
+</html>
