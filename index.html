@@ -1,307 +1,243 @@
+```html
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Soumyajit's AI</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
-    *{
-      margin:0;
-      padding:0;
-      box-sizing:border-box;
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+      background: radial-gradient(circle at top, #1e3a8a, #020617 45%, #000 100%);
     }
 
-    body{
-      font-family:'Inter',sans-serif;
-      background:#0f1117;
-      color:white;
-      height:100vh;
-      display:flex;
-      flex-direction:column;
+    .glass {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.1);
     }
 
-    header{
-      padding:18px 24px;
-      border-bottom:1px solid rgba(255,255,255,0.08);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      background:#111827;
+    .typing span {
+      width: 8px;
+      height: 8px;
+      background: cyan;
+      border-radius: 50%;
+      display: inline-block;
+      animation: bounce 1s infinite;
     }
 
-    .logo{
-      font-size:20px;
-      font-weight:700;
+    .typing span:nth-child(2) {
+      animation-delay: 0.2s;
     }
 
-    .status{
-      font-size:13px;
-      color:#4ade80;
+    .typing span:nth-child(3) {
+      animation-delay: 0.4s;
     }
 
-    #messages{
-      flex:1;
-      overflow-y:auto;
-      padding:20px;
-      display:flex;
-      flex-direction:column;
-      gap:18px;
-    }
-
-    .message{
-      max-width:800px;
-      width:fit-content;
-      padding:14px 18px;
-      border-radius:14px;
-      line-height:1.6;
-      white-space:pre-wrap;
-      word-wrap:break-word;
-    }
-
-    .user{
-      align-self:flex-end;
-      background:linear-gradient(135deg,#7c3aed,#2563eb);
-    }
-
-    .bot{
-      align-self:flex-start;
-      background:#1f2937;
-      border:1px solid rgba(255,255,255,0.08);
-    }
-
-    .input-area{
-      padding:18px;
-      border-top:1px solid rgba(255,255,255,0.08);
-      background:#111827;
-    }
-
-    .input-box{
-      max-width:900px;
-      margin:auto;
-      display:flex;
-      gap:12px;
-      align-items:flex-end;
-    }
-
-    textarea{
-      flex:1;
-      resize:none;
-      border:none;
-      outline:none;
-      background:#1f2937;
-      color:white;
-      padding:14px;
-      border-radius:12px;
-      min-height:56px;
-      max-height:160px;
-      font-size:15px;
-      font-family:'Inter',sans-serif;
-    }
-
-    button{
-      border:none;
-      outline:none;
-      cursor:pointer;
-      padding:14px 18px;
-      border-radius:12px;
-      background:linear-gradient(135deg,#7c3aed,#2563eb);
-      color:white;
-      font-weight:600;
-      font-size:14px;
-    }
-
-    button:hover{
-      opacity:0.9;
-    }
-
-    .typing{
-      display:flex;
-      gap:6px;
-      padding:12px 16px;
-      background:#1f2937;
-      width:fit-content;
-      border-radius:12px;
-    }
-
-    .typing span{
-      width:8px;
-      height:8px;
-      border-radius:50%;
-      background:white;
-      animation:bounce 1s infinite;
-    }
-
-    .typing span:nth-child(2){
-      animation-delay:0.2s;
-    }
-
-    .typing span:nth-child(3){
-      animation-delay:0.4s;
-    }
-
-    @keyframes bounce{
-      0%,80%,100%{
-        transform:translateY(0);
-        opacity:0.5;
-      }
-      40%{
-        transform:translateY(-6px);
-        opacity:1;
-      }
-    }
-
-    @media(max-width:700px){
-      #messages{
-        padding:14px;
-      }
-
-      .message{
-        max-width:100%;
-      }
-
-      .input-area{
-        padding:12px;
-      }
+    @keyframes bounce {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
     }
   </style>
 </head>
 
-<body>
+<body class="text-white">
 
-<header>
-  <div class="logo">✦ Soumyajit's AI</div>
-  <div class="status">● Online</div>
-</header>
+<div class="h-screen flex flex-col">
 
-<div id="messages">
-  <div class="message bot">
-    Hey 👋 I'm Soumyajit's AI assistant. Ask me anything.
-  </div>
-</div>
+  <header class="glass p-4 flex justify-between items-center">
+    <div>
+      <h1 class="text-2xl font-bold">Soumyajit's AI</h1>
+      <p class="text-sm text-gray-400">Your Personal AI Assistant</p>
+    </div>
 
-<div class="input-area">
-  <div class="input-box">
-    <textarea
-      id="input"
-      placeholder="Ask anything..."
-      rows="1"
-    ></textarea>
-
-    <button onclick="sendMessage()">
-      Send
+    <button id="themeBtn" class="glass px-4 py-2 rounded-xl">
+      🌙
     </button>
-  </div>
+  </header>
+
+  <main class="flex-1 max-w-6xl mx-auto w-full p-4 flex flex-col overflow-hidden">
+
+    <div class="text-center mb-6">
+      <h2 class="text-5xl font-bold bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 bg-clip-text text-transparent">
+        Welcome to Soumyajit's AI
+      </h2>
+
+      <p class="text-gray-400 mt-3">
+        Chat like ChatGPT with your own AI assistant.
+      </p>
+    </div>
+
+    <div id="chatBox" class="flex-1 overflow-y-auto glass rounded-3xl p-6 space-y-5">
+
+      <div class="flex justify-start">
+        <div class="glass px-5 py-4 rounded-3xl max-w-[80%]">
+          👋 Hi! I'm Soumyajit's AI Assistant. How can I help you today?
+        </div>
+      </div>
+
+    </div>
+
+    <div class="glass rounded-3xl p-4 mt-5">
+
+      <textarea
+        id="userInput"
+        rows="3"
+        placeholder="Message Soumyajit's AI..."
+        class="w-full rounded-3xl bg-black/30 border border-white/10 p-4 outline-none resize-none"
+      ></textarea>
+
+      <div class="flex flex-wrap items-center justify-between gap-3 mt-4">
+
+        <div class="flex flex-wrap gap-3">
+
+          <label class="glass px-4 py-3 rounded-2xl cursor-pointer">
+            📷 Upload
+            <input type="file" hidden>
+          </label>
+
+          <label class="glass px-4 py-3 rounded-2xl cursor-pointer">
+            📄 File
+            <input type="file" hidden>
+          </label>
+
+          <button class="glass px-4 py-3 rounded-2xl">
+            🎤 Voice
+          </button>
+
+        </div>
+
+        <button
+          id="sendBtn"
+          class="px-6 py-3 rounded-2xl bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-600"
+        >
+          Send ➜
+        </button>
+
+      </div>
+
+    </div>
+
+  </main>
+
 </div>
 
 <script>
 
-const WEBHOOK_URL = "https://n8n-production-a9be2.up.railway.app/webhook/bde39fec-3dc5-48bd-95d3-9b7402ae703b";
+const webhook =
+'https://n8n-production-a9be2.up.railway.app/webhook/bde39fec-3dc5-48bd-95d3-9b7402ae703b';
 
-const messages = document.getElementById("messages");
-const input = document.getElementById("input");
+const sendBtn = document.getElementById('sendBtn');
+const userInput = document.getElementById('userInput');
+const chatBox = document.getElementById('chatBox');
 
-input.addEventListener("keydown", function(e){
-  if(e.key === "Enter" && !e.shiftKey){
-    e.preventDefault();
-    sendMessage();
-  }
-});
+function addMessage(message, type='bot') {
 
-input.addEventListener("input", function(){
-  this.style.height = "auto";
-  this.style.height = this.scrollHeight + "px";
-});
+  const wrapper = document.createElement('div');
 
-function addMessage(text, type){
+  wrapper.className =
+    `flex ${type === 'user' ? 'justify-end' : 'justify-start'}`;
 
-  const div = document.createElement("div");
-  div.className = `message ${type}`;
-  div.textContent = text;
+  const bubble = document.createElement('div');
 
-  messages.appendChild(div);
-  messages.scrollTop = messages.scrollHeight;
+  bubble.className =
+    type === 'user'
+    ? 'px-5 py-4 rounded-3xl bg-cyan-600 max-w-[80%]'
+    : 'glass px-5 py-4 rounded-3xl max-w-[80%]';
 
-  return div;
+  bubble.innerText = message;
+
+  wrapper.appendChild(bubble);
+
+  chatBox.appendChild(wrapper);
+
+  chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-function showTyping(){
+async function sendMessage() {
 
-  const div = document.createElement("div");
-  div.className = "typing";
-  div.id = "typing";
+  const message = userInput.value.trim();
 
-  div.innerHTML = `
-    <span></span>
-    <span></span>
-    <span></span>
+  if(!message) return;
+
+  addMessage(message,'user');
+
+  userInput.value = '';
+
+  const loading = document.createElement('div');
+
+  loading.className = 'flex justify-start';
+
+  loading.innerHTML = `
+    <div class="glass px-5 py-4 rounded-3xl flex items-center gap-3">
+      <div class="typing flex gap-1">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+      <span>Soumyajit's AI is thinking...</span>
+    </div>
   `;
 
-  messages.appendChild(div);
-  messages.scrollTop = messages.scrollHeight;
-}
+  chatBox.appendChild(loading);
 
-function removeTyping(){
-  const typing = document.getElementById("typing");
-  if(typing) typing.remove();
-}
+  chatBox.scrollTop = chatBox.scrollHeight;
 
-async function sendMessage(){
+  try {
 
-  const text = input.value.trim();
-
-  if(!text) return;
-
-  addMessage(text, "user");
-
-  input.value = "";
-  input.style.height = "56px";
-
-  showTyping();
-
-  try{
-
-    const response = await fetch(WEBHOOK_URL,{
-      method:"POST",
+    const response = await fetch('/chat', {
+      method:'POST',
       headers:{
-        "Content-Type":"application/json"
+        'Content-Type':'application/json'
       },
       body:JSON.stringify({
-        message:text,
-        chatInput:text,
-        sessionId:"soumyajit-user"
+        message
       })
     });
 
     const data = await response.json();
 
-    removeTyping();
+    loading.remove();
 
-    const reply =
+    addMessage(
       data.output ||
       data.response ||
       data.message ||
-      data.text ||
-      JSON.stringify(data);
-
-    addMessage(reply,"bot");
-
-  }catch(error){
-
-    removeTyping();
-
-    addMessage(
-      "⚠️ Unable to connect with AI server.",
-      "bot"
+      'No response'
     );
 
-    console.error(error);
+  } catch(error) {
+
+    loading.remove();
+
+    addMessage('Error connecting AI');
+
   }
+
 }
+
+sendBtn.addEventListener('click', sendMessage);
+
+userInput.addEventListener('keydown', (e)=>{
+
+  if(e.key === 'Enter' && !e.shiftKey){
+
+    e.preventDefault();
+
+    sendMessage();
+
+  }
+
+});
 
 </script>
 
 </body>
 </html>
+```
