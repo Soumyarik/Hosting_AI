@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html>
 <head>
@@ -129,9 +128,6 @@
 
 <script>
 
-const webhook =
-'https://n8n-production-a9be2.up.railway.app/webhook/bde39fec-3dc5-48bd-95d3-9b7402ae703b';
-
 const sendBtn = document.getElementById('sendBtn');
 const userInput = document.getElementById('userInput');
 const chatBox = document.getElementById('chatBox');
@@ -201,22 +197,39 @@ async function sendMessage() {
       })
     });
 
-    const data = await response.json();
+    const text = await response.text();
+
+    console.log('RAW RESPONSE:', text);
 
     loading.remove();
 
+    if(!text || text.trim() === ''){
+
+      addMessage('⚠️ Empty response from AI');
+
+      return;
+    }
+
+    const data = JSON.parse(text);
+
+    console.log('PARSED DATA:', data);
+
     addMessage(
+      data.reply ||
       data.output ||
       data.response ||
       data.message ||
-      'No response'
+      data[0]?.output ||
+      '⚠️ No response'
     );
 
   } catch(error) {
 
+    console.error('FETCH ERROR:', error);
+
     loading.remove();
 
-    addMessage('Error connecting AI');
+    addMessage('⚠️ Error connecting AI');
 
   }
 
@@ -240,4 +253,3 @@ userInput.addEventListener('keydown', (e)=>{
 
 </body>
 </html>
-```
