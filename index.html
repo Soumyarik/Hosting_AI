@@ -49,13 +49,12 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 0;
+            padding: 20px 30px;
             margin-bottom: 30px;
             backdrop-filter: blur(10px);
             background: var(--glass-bg);
             border-radius: 20px;
             border: 1px solid var(--glass-border);
-            padding: 20px 30px;
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
             animation: slideDown 0.5s ease-out;
         }
@@ -99,12 +98,6 @@
             50% { transform: translateY(-10px); }
         }
 
-        .header-controls {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-        }
-
         .toggle-btn {
             width: 50px;
             height: 50px;
@@ -118,7 +111,6 @@
             font-size: 20px;
             color: var(--accent);
             transition: all 0.3s ease;
-            position: relative;
         }
 
         .toggle-btn:hover {
@@ -307,10 +299,6 @@
             border-radius: 10px;
         }
 
-        .chat-messages::-webkit-scrollbar-thumb:hover {
-            background: var(--accent-light);
-        }
-
         .message {
             margin-bottom: 15px;
             animation: messageAppear 0.4s ease-out;
@@ -461,28 +449,6 @@
             display: none;
         }
 
-        .voice-recording {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background: var(--primary-gradient);
-            animation: pulse 1s infinite;
-            display: none;
-        }
-
-        .voice-recording.active {
-            display: flex;
-        }
-
-        @keyframes pulse {
-            0%, 100% {
-                box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.7);
-            }
-            50% {
-                box-shadow: 0 0 0 10px rgba(102, 126, 234, 0);
-            }
-        }
-
         .input-area {
             display: flex;
             gap: 10px;
@@ -500,6 +466,7 @@
             transition: all 0.3s ease;
             resize: none;
             max-height: 100px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body.dark-mode .input-field {
@@ -760,11 +727,9 @@
                 <i class="fas fa-brain"></i>
                 Soumyajit's AI
             </div>
-            <div class="header-controls">
-                <button class="toggle-btn" id="themToggle" title="Toggle Dark Mode">
-                    <i class="fas fa-moon"></i>
-                </button>
-            </div>
+            <button class="toggle-btn" id="themeToggle" title="Toggle Dark Mode">
+                <i class="fas fa-moon"></i>
+            </button>
         </div>
 
         <!-- Main Content -->
@@ -875,9 +840,6 @@
     <input type="file" id="fileInput" class="file-input" accept="image/*">
 
     <script>
-        // Webhook Configuration
-        const WEBHOOK_URL = 'https://n8n-production-a9be2.up.railway.app/webhook/bde39fec-3dc5-48bd-95d3-9b7402ae703b';
-
         // State Management
         const state = {
             messages: [],
@@ -900,7 +862,7 @@
             imagePreview: document.getElementById('imagePreview'),
             previewImg: document.getElementById('previewImg'),
             removeImg: document.getElementById('removeImg'),
-            themeToggle: document.getElementById('themToggle'),
+            themeToggle: document.getElementById('themeToggle'),
             historyBtn: document.getElementById('historyBtn'),
             historyModal: document.getElementById('historyModal'),
             closeModal: document.getElementById('closeModal'),
@@ -912,23 +874,19 @@
             applyTheme();
             attachEventListeners();
             loadChatHistory();
-            displayWelcomeMessage();
             setupKeyboardShortcuts();
         }
 
         // Keyboard Shortcuts
         function setupKeyboardShortcuts() {
             document.addEventListener('keydown', (e) => {
-                // Ctrl+Enter or Cmd+Enter to send
                 if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
                     sendMessage();
                 }
-                // Ctrl+D or Cmd+D for document upload
                 if ((e.ctrlKey || e.metaKey) && e.key === 'd') {
                     e.preventDefault();
                     elements.fileInput.click();
                 }
-                // Ctrl+V or Cmd+V for voice
                 if ((e.ctrlKey || e.metaKey) && e.key === 'v') {
                     e.preventDefault();
                     toggleVoiceRecording();
@@ -958,19 +916,6 @@
             elements.historyModal.addEventListener('click', (e) => {
                 if (e.target === elements.historyModal) closeHistory();
             });
-        }
-
-        // Display Welcome Message
-        function displayWelcomeMessage() {
-            elements.chatMessages.innerHTML = '';
-            
-            const welcomeMessage = {
-                type: 'ai',
-                content: '<strong>Welcome to Soumyajit\'s AI! 👋</strong><br><br>How can I assist you today?',
-                timestamp: new Date()
-            };
-            
-            displayMessage(welcomeMessage);
         }
 
         // Send Message with Webhook Integration
@@ -1008,11 +953,10 @@
                     image: imageData || null,
                     timestamp: new Date().toISOString(),
                     userAgent: navigator.userAgent,
-                    platform: getPlatform(),
-                    url: window.location.href
+                    platform: getPlatform()
                 };
 
-                const response = await fetch(WEBHOOK_URL, {
+                const response = await fetch('/api/webhook', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1025,7 +969,7 @@
 
                 const aiMessage = {
                     type: 'ai',
-                    content: data.response || data.message || data.result || 'Your request has been processed successfully!',
+                    content: data.response || 'Request processed successfully!',
                     timestamp: new Date()
                 };
 
@@ -1038,7 +982,7 @@
 
                 const errorMessage = {
                     type: 'ai',
-                    content: '⚠️ <strong>Connection Error</strong><br><br>Unable to reach the AI server. Please check your internet connection and try again.<br><br><strong>Connection Status:</strong> ' + (navigator.onLine ? '🟢 Online' : '🔴 Offline'),
+                    content: '⚠️ <strong>Connection Error</strong><br><br>Unable to reach the server. Please check your internet connection and try again.',
                     timestamp: new Date()
                 };
 
@@ -1113,7 +1057,7 @@
             elements.fileInput.value = '';
         }
 
-        // Voice Recording with Web Audio API
+        // Voice Recording
         async function toggleVoiceRecording() {
             if (!state.isRecording) {
                 startVoiceRecording();
@@ -1143,7 +1087,7 @@
                 elements.voiceBtn.style.background = 'var(--primary-gradient)';
                 elements.voiceBtn.style.color = 'white';
                 elements.voiceBtn.innerHTML = '<i class="fas fa-stop-circle"></i>';
-                elements.voiceBtn.title = 'Stop Recording (Click or Press Ctrl+V to stop)';
+                elements.voiceBtn.title = 'Stop Recording';
 
                 setTimeout(() => {
                     if (state.isRecording) {
@@ -1153,9 +1097,7 @@
 
             } catch (error) {
                 console.error('Microphone Error:', error);
-                alert('Microphone access denied. Please enable microphone permissions in your browser settings.');
-                elements.voiceBtn.innerHTML = '<i class="fas fa-microphone"></i><span class="btn-label">Voice</span>';
-                state.isRecording = false;
+                alert('Microphone access denied. Please enable microphone permissions.');
             }
         }
 
@@ -1168,7 +1110,6 @@
                 elements.voiceBtn.style.background = 'transparent';
                 elements.voiceBtn.style.color = 'var(--accent)';
                 elements.voiceBtn.innerHTML = '<i class="fas fa-microphone"></i><span class="btn-label">Voice</span>';
-                elements.voiceBtn.title = 'Voice Input - Click to record (Shortcut: Ctrl+V)';
             }
         }
 
@@ -1189,9 +1130,8 @@
                 formData.append('audio', audioBlob, 'voice.wav');
                 formData.append('type', 'voice');
                 formData.append('timestamp', new Date().toISOString());
-                formData.append('platform', getPlatform());
 
-                const response = await fetch(WEBHOOK_URL, {
+                const response = await fetch('/api/voice', {
                     method: 'POST',
                     body: formData
                 });
@@ -1201,7 +1141,7 @@
 
                 const aiMessage = {
                     type: 'ai',
-                    content: data.response || data.message || 'Voice message processed successfully!',
+                    content: data.response || 'Voice message processed!',
                     timestamp: new Date()
                 };
 
@@ -1214,7 +1154,7 @@
 
                 const errorMessage = {
                     type: 'ai',
-                    content: '⚠️ Failed to process voice message. Please check your connection and try again.',
+                    content: '⚠️ Failed to process voice message.',
                     timestamp: new Date()
                 };
 
