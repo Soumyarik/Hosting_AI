@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "Professional AI Agent Web Application with Webhook Integration",
   "main": "server.js",
-  "type": "module",
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
@@ -29,13 +28,5 @@
   "engines": {
     "node": "18.x",
     "npm": "9.x"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/yourusername/soumyajit-ai-agent"
-  },
-  "bugs": {
-    "url": "https://github.com/yourusername/soumyajit-ai-agent/issues"
-  },
-  "homepage": "https://github.com/yourusername/soumyajit-ai-agent#readme"
+  }
 }
