@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Soumyajit's AI - Intelligent Assistant</title>
+    <title>Soumyajit's AI</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -13,298 +13,112 @@
         }
 
         :root {
-            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            --glass-bg: rgba(255, 255, 255, 0.7);
-            --glass-border: rgba(255, 255, 255, 0.3);
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --light-bg: #f5f7fa;
             --dark-bg: #0f0f1e;
-            --dark-card: rgba(20, 20, 35, 0.8);
+            --card-light: rgba(255, 255, 255, 0.7);
+            --card-dark: rgba(20, 20, 35, 0.8);
             --text-light: #1a1a2e;
             --text-dark: #e0e0e0;
-            --accent: #667eea;
-            --accent-light: #764ba2;
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+            background: linear-gradient(135deg, var(--light-bg) 0%, #e9ecef 100%);
             color: var(--text-light);
             transition: all 0.3s ease;
-            overflow-x: hidden;
         }
 
         body.dark-mode {
-            background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%);
+            background: linear-gradient(135deg, var(--dark-bg) 0%, #1a1a2e 100%);
             color: var(--text-dark);
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 900px;
             margin: 0 auto;
             padding: 20px;
         }
 
-        /* Header */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 30px;
-            margin-bottom: 30px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background: var(--card-light);
+            border-radius: 15px;
             backdrop-filter: blur(10px);
-            background: var(--glass-bg);
-            border-radius: 20px;
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
-            animation: slideDown 0.5s ease-out;
         }
 
         body.dark-mode .header {
-            background: var(--dark-card);
-            border-color: rgba(255, 255, 255, 0.1);
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            background: var(--card-dark);
         }
 
         .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary);
             display: flex;
             align-items: center;
-            gap: 15px;
-            font-size: 24px;
-            font-weight: 700;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .logo i {
-            font-size: 32px;
-            color: var(--accent);
-            animation: float 3s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
+            gap: 10px;
         }
 
         .toggle-btn {
             width: 50px;
             height: 50px;
             border-radius: 50%;
-            border: 2px solid var(--accent);
+            border: 2px solid var(--primary);
             background: transparent;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            color: var(--primary);
             font-size: 20px;
-            color: var(--accent);
+            cursor: pointer;
             transition: all 0.3s ease;
         }
 
         .toggle-btn:hover {
-            background: var(--accent);
+            background: var(--primary);
             color: white;
-            transform: scale(1.1) rotate(20deg);
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+            transform: scale(1.1);
         }
 
-        /* Main Layout */
-        .main-content {
-            display: grid;
-            grid-template-columns: 350px 1fr;
-            gap: 30px;
-            align-items: start;
-        }
-
-        /* Welcome Section */
-        .welcome-section {
-            backdrop-filter: blur(20px);
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 25px;
-            padding: 40px;
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
-            animation: slideUp 0.6s ease-out;
-        }
-
-        body.dark-mode .welcome-section {
-            background: var(--dark-card);
-            border-color: rgba(255, 255, 255, 0.1);
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .welcome-title {
-            font-size: 32px;
-            font-weight: 700;
-            margin-bottom: 15px;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .welcome-subtitle {
-            color: var(--accent);
-            font-size: 14px;
-            margin-bottom: 25px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .welcome-text {
-            font-size: 16px;
-            line-height: 1.8;
-            color: var(--text-light);
-            margin-bottom: 30px;
-            opacity: 0.8;
-        }
-
-        body.dark-mode .welcome-text {
-            color: var(--text-dark);
-        }
-
-        .features-list {
+        .chat-box {
+            background: var(--card-light);
+            border-radius: 15px;
+            padding: 20px;
+            height: 600px;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            backdrop-filter: blur(10px);
         }
 
-        .feature-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 15px;
-            background: rgba(102, 126, 234, 0.1);
-            border-radius: 12px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            border-left: 4px solid var(--accent);
+        body.dark-mode .chat-box {
+            background: var(--card-dark);
         }
 
-        .feature-item:hover {
-            background: rgba(102, 126, 234, 0.2);
-            transform: translateX(5px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
-        }
-
-        body.dark-mode .feature-item {
-            background: rgba(102, 126, 234, 0.15);
-        }
-
-        .feature-item i {
-            font-size: 20px;
-            color: var(--accent);
-            min-width: 20px;
-        }
-
-        .feature-item span {
-            font-weight: 600;
-            color: var(--text-light);
-        }
-
-        body.dark-mode .feature-item span {
-            color: var(--text-dark);
-        }
-
-        /* Chat Section */
-        .chat-section {
-            display: flex;
-            flex-direction: column;
-            height: 900px;
-            backdrop-filter: blur(20px);
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 25px;
-            padding: 30px;
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
-            animation: slideUp 0.6s ease-out 0.1s both;
-        }
-
-        body.dark-mode .chat-section {
-            background: var(--dark-card);
-            border-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .chat-header {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 20px;
-            color: var(--text-light);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        body.dark-mode .chat-header {
-            color: var(--text-dark);
-        }
-
-        .chat-history-btn {
-            background: var(--accent);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 12px;
-            transition: all 0.3s ease;
-        }
-
-        .chat-history-btn:hover {
-            background: var(--accent-light);
-            transform: scale(1.05);
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-        }
-
-        .chat-messages {
+        .messages {
             flex: 1;
             overflow-y: auto;
             margin-bottom: 20px;
             padding-right: 10px;
         }
 
-        .chat-messages::-webkit-scrollbar {
+        .messages::-webkit-scrollbar {
             width: 6px;
         }
 
-        .chat-messages::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .chat-messages::-webkit-scrollbar-thumb {
-            background: var(--accent);
+        .messages::-webkit-scrollbar-thumb {
+            background: var(--primary);
             border-radius: 10px;
         }
 
         .message {
             margin-bottom: 15px;
-            animation: messageAppear 0.4s ease-out;
+            animation: slideIn 0.3s ease;
         }
 
-        @keyframes messageAppear {
+        @keyframes slideIn {
             from {
                 opacity: 0;
                 transform: translateY(10px);
@@ -335,16 +149,14 @@
         }
 
         .user .message-content {
-            background: var(--primary-gradient);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
-            border-radius: 20px 5px 20px 20px;
         }
 
         .ai .message-content {
             background: rgba(102, 126, 234, 0.1);
             color: var(--text-light);
-            border-radius: 5px 20px 20px 20px;
-            border: 1px solid var(--accent);
+            border: 1px solid var(--primary);
         }
 
         body.dark-mode .ai .message-content {
@@ -352,133 +164,29 @@
             color: var(--text-dark);
         }
 
-        .typing-indicator {
-            display: flex;
-            gap: 4px;
-            padding: 12px 16px;
-        }
-
-        .typing-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--accent);
-            animation: typing 1.4s infinite;
-        }
-
-        .typing-dot:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-
-        .typing-dot:nth-child(3) {
-            animation-delay: 0.4s;
-        }
-
-        @keyframes typing {
-            0%, 60%, 100% {
-                opacity: 0.3;
-                transform: translateY(0);
-            }
-            30% {
-                opacity: 1;
-                transform: translateY(-10px);
-            }
-        }
-
-        /* Input Section */
-        .input-section {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .input-toolbar {
-            display: flex;
-            gap: 20px;
-            justify-content: flex-start;
-            margin-bottom: 10px;
-        }
-
-        .input-btn {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            border: 2px solid var(--accent);
-            background: transparent;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            color: var(--accent);
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .input-btn .btn-label {
-            position: absolute;
-            bottom: -22px;
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--text-light);
-            white-space: nowrap;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        body.dark-mode .input-btn .btn-label {
-            color: var(--text-dark);
-        }
-
-        .input-btn:hover .btn-label {
-            opacity: 1;
-        }
-
-        .input-btn:hover {
-            background: var(--accent);
-            color: white;
-            transform: scale(1.1);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
-        }
-
-        .input-btn:active {
-            transform: scale(0.95);
-        }
-
-        .file-input {
-            display: none;
-        }
-
         .input-area {
             display: flex;
             gap: 10px;
-            align-items: flex-end;
         }
 
         .input-field {
             flex: 1;
             padding: 12px 16px;
-            border: 2px solid var(--accent);
+            border: 2px solid var(--primary);
             border-radius: 20px;
             font-size: 14px;
             background: transparent;
             color: var(--text-light);
+            font-family: inherit;
             transition: all 0.3s ease;
-            resize: none;
-            max-height: 100px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body.dark-mode .input-field {
-            background: rgba(255, 255, 255, 0.05);
             color: var(--text-dark);
-            border-color: var(--accent);
         }
 
         .input-field:focus {
             outline: none;
-            border-color: var(--accent-light);
-            background: rgba(102, 126, 234, 0.05);
             box-shadow: 0 0 20px rgba(102, 126, 234, 0.2);
         }
 
@@ -486,22 +194,15 @@
             color: rgba(26, 26, 46, 0.5);
         }
 
-        body.dark-mode .input-field::placeholder {
-            color: rgba(224, 224, 224, 0.5);
-        }
-
         .send-btn {
             width: 45px;
             height: 45px;
             border-radius: 50%;
-            background: var(--primary-gradient);
             border: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
             font-size: 18px;
+            cursor: pointer;
             transition: all 0.3s ease;
         }
 
@@ -514,157 +215,36 @@
             transform: scale(0.95);
         }
 
-        /* Image Preview */
-        .image-preview {
-            position: relative;
-            width: 100%;
-            max-height: 200px;
-            margin-bottom: 10px;
-            border-radius: 15px;
-            overflow: hidden;
-            background: rgba(102, 126, 234, 0.1);
+        .typing {
+            display: flex;
+            gap: 4px;
+            padding: 12px 16px;
         }
 
-        .image-preview img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .image-preview .remove-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: var(--primary-gradient);
-            color: white;
-            border: none;
-            width: 30px;
-            height: 30px;
+        .typing-dot {
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
+            background: var(--primary);
+            animation: typing 1.4s infinite;
         }
 
-        .image-preview .remove-btn:hover {
-            transform: scale(1.15);
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
         }
 
-        /* Chat History Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-            animation: fadeIn 0.3s ease;
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
         }
 
-        .modal.active {
-            display: flex;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-
-        .modal-content {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 25px;
-            padding: 40px;
-            width: 90%;
-            max-width: 500px;
-            max-height: 600px;
-            overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(31, 38, 135, 0.2);
-            animation: slideUp 0.3s ease;
-        }
-
-        body.dark-mode .modal-content {
-            background: var(--dark-card);
-            border-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--text-light);
-        }
-
-        body.dark-mode .modal-header {
-            color: var(--text-dark);
-        }
-
-        .close-modal {
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: var(--accent);
-            transition: all 0.3s ease;
-        }
-
-        .close-modal:hover {
-            transform: rotate(90deg);
-        }
-
-        .history-item {
-            padding: 12px;
-            margin-bottom: 10px;
-            background: rgba(102, 126, 234, 0.1);
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border-left: 4px solid var(--accent);
-            font-size: 14px;
-            color: var(--text-light);
-        }
-
-        body.dark-mode .history-item {
-            background: rgba(102, 126, 234, 0.15);
-            color: var(--text-dark);
-        }
-
-        .history-item:hover {
-            background: rgba(102, 126, 234, 0.2);
-            transform: translateX(5px);
-        }
-
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .main-content {
-                grid-template-columns: 1fr;
-            }
-
-            .chat-section {
-                height: 700px;
-            }
+        @keyframes typing {
+            0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
+            30% { opacity: 1; transform: translateY(-10px); }
         }
 
         @media (max-width: 768px) {
-            .main-content {
-                grid-template-columns: 1fr;
-            }
-
-            .chat-section {
-                height: 600px;
+            .chat-box {
+                height: 500px;
             }
 
             .message-content {
@@ -676,588 +256,124 @@
                 gap: 15px;
                 text-align: center;
             }
-
-            .container {
-                padding: 10px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .main-content {
-                grid-template-columns: 1fr;
-            }
-
-            .chat-section {
-                height: 500px;
-                padding: 15px;
-                border-radius: 15px;
-            }
-
-            .welcome-section {
-                padding: 20px;
-                border-radius: 15px;
-            }
-
-            .message-content {
-                max-width: 90%;
-                font-size: 13px;
-                padding: 10px 12px;
-            }
-
-            .input-field {
-                font-size: 13px;
-            }
-
-            .welcome-title {
-                font-size: 24px;
-            }
-
-            .feature-item {
-                padding: 12px;
-                font-size: 13px;
-            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
         <div class="header">
             <div class="logo">
                 <i class="fas fa-brain"></i>
                 Soumyajit's AI
             </div>
-            <button class="toggle-btn" id="themeToggle" title="Toggle Dark Mode">
+            <button class="toggle-btn" id="themeBtn">
                 <i class="fas fa-moon"></i>
             </button>
         </div>
 
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Welcome Section -->
-            <div class="welcome-section">
-                <div class="welcome-subtitle">Welcome to</div>
-                <div class="welcome-title">Soumyajit's AI</div>
-                <p class="welcome-text">
-                    Your intelligent assistant powered by cutting-edge AI technology. I'm here to help you accomplish more with less effort.
-                </p>
-                <p style="font-size: 14px; color: var(--accent); margin-bottom: 25px; font-weight: 600;">
-                    <i class="fas fa-sparkles"></i> Currently Available Features:
-                </p>
-                <div class="features-list">
-                    <div class="feature-item">
-                        <i class="fas fa-cloud-sun"></i>
-                        <span>Weather Reports</span>
-                    </div>
-                    <div class="feature-item">
-                        <i class="fas fa-calculator"></i>
-                        <span>Advanced Calculations</span>
-                    </div>
-                    <div class="feature-item">
-                        <i class="fas fa-image"></i>
-                        <span>AI Image Creation</span>
-                    </div>
-                    <div class="feature-item">
-                        <i class="fas fa-search"></i>
-                        <span>Search Engine</span>
+        <div class="chat-box">
+            <div class="messages" id="messages">
+                <div class="message ai">
+                    <div class="message-content">
+                        <strong>Welcome!</strong> 👋 How can I assist you today?
                     </div>
                 </div>
             </div>
 
-            <!-- Chat Section -->
-            <div class="chat-section">
-                <div class="chat-header">
-                    Chat History
-                    <button class="chat-history-btn" id="historyBtn">
-                        <i class="fas fa-history"></i> View All
-                    </button>
-                </div>
-
-                <!-- Chat Messages -->
-                <div class="chat-messages" id="chatMessages">
-                    <div class="message ai">
-                        <div class="message-content">
-                            <strong>Welcome!</strong> 👋 How can I assist you today?
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Input Section -->
-                <div class="input-section">
-                    <!-- Toolbar -->
-                    <div class="input-toolbar">
-                        <button class="input-btn" id="uploadBtn" title="Upload Image/Document (Shortcut: Ctrl+D)">
-                            <i class="fas fa-file-upload"></i>
-                            <span class="btn-label">Doc</span>
-                        </button>
-                        <button class="input-btn" id="voiceBtn" title="Voice Input - Click to record (Shortcut: Ctrl+V)">
-                            <i class="fas fa-microphone"></i>
-                            <span class="btn-label">Voice</span>
-                        </button>
-                    </div>
-
-                    <!-- Image Preview -->
-                    <div id="imagePreview" style="display: none;">
-                        <div class="image-preview">
-                            <img id="previewImg" src="" alt="Preview">
-                            <button class="remove-btn" id="removeImg" title="Remove Image">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Input Area -->
-                    <div class="input-area">
-                        <textarea 
-                            class="input-field" 
-                            id="messageInput" 
-                            placeholder="Type your message here..." 
-                            rows="2"
-                        ></textarea>
-                        <button class="send-btn" id="sendBtn" title="Send Message">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Chat History Modal -->
-    <div class="modal" id="historyModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <span>Chat History</span>
-                <button class="close-modal" id="closeModal">
-                    <i class="fas fa-times"></i>
+            <div class="input-area">
+                <input 
+                    type="text" 
+                    class="input-field" 
+                    id="input" 
+                    placeholder="Type your message..." 
+                    autocomplete="off"
+                >
+                <button class="send-btn" id="sendBtn">
+                    <i class="fas fa-paper-plane"></i>
                 </button>
             </div>
-            <div id="historyList"></div>
         </div>
     </div>
 
-    <!-- Hidden File Input -->
-    <input type="file" id="fileInput" class="file-input" accept="image/*">
-
     <script>
-        // State Management
-        const state = {
-            messages: [],
-            chatHistory: [],
-            isDarkMode: localStorage.getItem('darkMode') === 'true',
-            selectedImage: null,
-            isRecording: false,
-            mediaRecorder: null,
-            audioChunks: []
-        };
+        const messagesDiv = document.getElementById('messages');
+        const inputField = document.getElementById('input');
+        const sendBtn = document.getElementById('sendBtn');
+        const themeBtn = document.getElementById('themeBtn');
 
-        // DOM Elements
-        const elements = {
-            messageInput: document.getElementById('messageInput'),
-            chatMessages: document.getElementById('chatMessages'),
-            sendBtn: document.getElementById('sendBtn'),
-            uploadBtn: document.getElementById('uploadBtn'),
-            voiceBtn: document.getElementById('voiceBtn'),
-            fileInput: document.getElementById('fileInput'),
-            imagePreview: document.getElementById('imagePreview'),
-            previewImg: document.getElementById('previewImg'),
-            removeImg: document.getElementById('removeImg'),
-            themeToggle: document.getElementById('themeToggle'),
-            historyBtn: document.getElementById('historyBtn'),
-            historyModal: document.getElementById('historyModal'),
-            closeModal: document.getElementById('closeModal'),
-            historyList: document.getElementById('historyList')
-        };
-
-        // Initialize
-        function init() {
-            applyTheme();
-            attachEventListeners();
-            loadChatHistory();
-            setupKeyboardShortcuts();
+        // Theme
+        const isDark = localStorage.getItem('dark') === 'true';
+        if (isDark) {
+            document.body.classList.add('dark-mode');
+            themeBtn.innerHTML = '<i class="fas fa-sun"></i>';
         }
 
-        // Keyboard Shortcuts
-        function setupKeyboardShortcuts() {
-            document.addEventListener('keydown', (e) => {
-                if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-                    sendMessage();
-                }
-                if ((e.ctrlKey || e.metaKey) && e.key === 'd') {
-                    e.preventDefault();
-                    elements.fileInput.click();
-                }
-                if ((e.ctrlKey || e.metaKey) && e.key === 'v') {
-                    e.preventDefault();
-                    toggleVoiceRecording();
-                }
-            });
-        }
-
-        // Event Listeners
-        function attachEventListeners() {
-            elements.sendBtn.addEventListener('click', sendMessage);
-            elements.messageInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    sendMessage();
-                }
-            });
-
-            elements.uploadBtn.addEventListener('click', () => elements.fileInput.click());
-            elements.fileInput.addEventListener('change', handleImageUpload);
-            elements.removeImg.addEventListener('click', removeImage);
-
-            elements.voiceBtn.addEventListener('click', toggleVoiceRecording);
-
-            elements.themeToggle.addEventListener('click', toggleTheme);
-            elements.historyBtn.addEventListener('click', showHistory);
-            elements.closeModal.addEventListener('click', closeHistory);
-            elements.historyModal.addEventListener('click', (e) => {
-                if (e.target === elements.historyModal) closeHistory();
-            });
-        }
-
-        // Send Message with Webhook Integration
-        async function sendMessage() {
-            const message = elements.messageInput.value.trim();
-
-            if (!message && !state.selectedImage) return;
-
-            const userMessage = {
-                type: 'user',
-                content: message,
-                image: state.selectedImage,
-                timestamp: new Date()
-            };
-
-            state.messages.push(userMessage);
-            displayMessage(userMessage);
-
-            elements.messageInput.value = '';
-            elements.messageInput.style.height = 'auto';
-            addToHistory(message);
-
-            showTypingIndicator();
-
-            await sendToWebhook(message, state.selectedImage);
-
-            removeImage();
-        }
-
-        // Send to Webhook
-        async function sendToWebhook(message, imageData) {
-            try {
-                const payload = {
-                    message: message,
-                    image: imageData || null,
-                    timestamp: new Date().toISOString(),
-                    userAgent: navigator.userAgent,
-                    platform: getPlatform()
-                };
-
-                const response = await fetch('/api/webhook', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(payload)
-                });
-
-                const data = await response.json();
-                removeTypingIndicator();
-
-                const aiMessage = {
-                    type: 'ai',
-                    content: data.response || 'Request processed successfully!',
-                    timestamp: new Date()
-                };
-
-                state.messages.push(aiMessage);
-                displayMessage(aiMessage);
-
-            } catch (error) {
-                console.error('Webhook Error:', error);
-                removeTypingIndicator();
-
-                const errorMessage = {
-                    type: 'ai',
-                    content: '⚠️ <strong>Connection Error</strong><br><br>Unable to reach the server. Please check your internet connection and try again.',
-                    timestamp: new Date()
-                };
-
-                displayMessage(errorMessage);
-            }
-        }
-
-        // Typing Indicator
-        function showTypingIndicator() {
-            const typingDiv = document.createElement('div');
-            typingDiv.className = 'message ai';
-            typingDiv.id = 'typingIndicator';
-            typingDiv.innerHTML = `
-                <div class="message-content">
-                    <div class="typing-indicator">
-                        <div class="typing-dot"></div>
-                        <div class="typing-dot"></div>
-                        <div class="typing-dot"></div>
-                    </div>
-                </div>
-            `;
-            elements.chatMessages.appendChild(typingDiv);
-            elements.chatMessages.scrollTop = elements.chatMessages.scrollHeight;
-        }
-
-        function removeTypingIndicator() {
-            const typingDiv = document.getElementById('typingIndicator');
-            if (typingDiv) {
-                typingDiv.remove();
-            }
-        }
-
-        // Display Message
-        function displayMessage(message) {
-            const messageEl = document.createElement('div');
-            messageEl.className = `message ${message.type}`;
-
-            let content = `<div class="message-content">`;
-
-            if (message.image) {
-                content += `<img src="${message.image}" style="max-width: 100%; border-radius: 10px; margin-bottom: 10px;">`;
-            }
-
-            if (message.content) {
-                content += message.content;
-            }
-
-            content += `</div>`;
-            messageEl.innerHTML = content;
-
-            elements.chatMessages.appendChild(messageEl);
-            elements.chatMessages.scrollTop = elements.chatMessages.scrollHeight;
-        }
-
-        // Image Upload
-        function handleImageUpload(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                state.selectedImage = event.target.result;
-                elements.previewImg.src = state.selectedImage;
-                elements.imagePreview.style.display = 'block';
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function removeImage() {
-            state.selectedImage = null;
-            elements.imagePreview.style.display = 'none';
-            elements.fileInput.value = '';
-        }
-
-        // Voice Recording
-        async function toggleVoiceRecording() {
-            if (!state.isRecording) {
-                startVoiceRecording();
-            } else {
-                stopVoiceRecording();
-            }
-        }
-
-        async function startVoiceRecording() {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                state.mediaRecorder = new MediaRecorder(stream);
-                state.audioChunks = [];
-
-                state.mediaRecorder.ondataavailable = (event) => {
-                    state.audioChunks.push(event.data);
-                };
-
-                state.mediaRecorder.onstop = async () => {
-                    const audioBlob = new Blob(state.audioChunks, { type: 'audio/wav' });
-                    await sendAudioToWebhook(audioBlob);
-                };
-
-                state.mediaRecorder.start();
-                state.isRecording = true;
-
-                elements.voiceBtn.style.background = 'var(--primary-gradient)';
-                elements.voiceBtn.style.color = 'white';
-                elements.voiceBtn.innerHTML = '<i class="fas fa-stop-circle"></i>';
-                elements.voiceBtn.title = 'Stop Recording';
-
-                setTimeout(() => {
-                    if (state.isRecording) {
-                        stopVoiceRecording();
-                    }
-                }, 30000);
-
-            } catch (error) {
-                console.error('Microphone Error:', error);
-                alert('Microphone access denied. Please enable microphone permissions.');
-            }
-        }
-
-        function stopVoiceRecording() {
-            if (state.mediaRecorder) {
-                state.mediaRecorder.stop();
-                state.mediaRecorder.stream.getTracks().forEach(track => track.stop());
-                state.isRecording = false;
-
-                elements.voiceBtn.style.background = 'transparent';
-                elements.voiceBtn.style.color = 'var(--accent)';
-                elements.voiceBtn.innerHTML = '<i class="fas fa-microphone"></i><span class="btn-label">Voice</span>';
-            }
-        }
-
-        // Send Audio to Webhook
-        async function sendAudioToWebhook(audioBlob) {
-            const userMessage = {
-                type: 'user',
-                content: '🎤 Voice message sent',
-                timestamp: new Date()
-            };
-
-            displayMessage(userMessage);
-            showTypingIndicator();
-            addToHistory('🎤 Voice message');
-
-            try {
-                const formData = new FormData();
-                formData.append('audio', audioBlob, 'voice.wav');
-                formData.append('type', 'voice');
-                formData.append('timestamp', new Date().toISOString());
-
-                const response = await fetch('/api/voice', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                const data = await response.json();
-                removeTypingIndicator();
-
-                const aiMessage = {
-                    type: 'ai',
-                    content: data.response || 'Voice message processed!',
-                    timestamp: new Date()
-                };
-
-                state.messages.push(aiMessage);
-                displayMessage(aiMessage);
-
-            } catch (error) {
-                console.error('Voice Send Error:', error);
-                removeTypingIndicator();
-
-                const errorMessage = {
-                    type: 'ai',
-                    content: '⚠️ Failed to process voice message.',
-                    timestamp: new Date()
-                };
-
-                displayMessage(errorMessage);
-            }
-        }
-
-        // Get Platform
-        function getPlatform() {
-            const ua = navigator.userAgent;
-            if (/android/i.test(ua)) return 'Android Mobile';
-            if (/iphone|ipad|ipod/i.test(ua)) return 'iOS Mobile';
-            if (/windows/i.test(ua)) return 'Windows Desktop';
-            if (/mac/i.test(ua)) return 'Mac Desktop';
-            if (/linux/i.test(ua)) return 'Linux Desktop';
-            return 'Unknown Platform';
-        }
-
-        // Theme Toggle
-        function toggleTheme() {
-            state.isDarkMode = !state.isDarkMode;
-            localStorage.setItem('darkMode', state.isDarkMode);
-            applyTheme();
-        }
-
-        function applyTheme() {
-            if (state.isDarkMode) {
-                document.body.classList.add('dark-mode');
-                elements.themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
-            } else {
-                document.body.classList.remove('dark-mode');
-                elements.themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
-            }
-        }
-
-        // Chat History
-        function addToHistory(message) {
-            const timestamp = new Date().toLocaleTimeString([], {
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-
-            state.chatHistory.unshift({
-                message: message.substring(0, 50) + (message.length > 50 ? '...' : ''),
-                timestamp: timestamp,
-                fullMessage: message
-            });
-
-            if (state.chatHistory.length > 50) {
-                state.chatHistory.pop();
-            }
-
-            localStorage.setItem('chatHistory', JSON.stringify(state.chatHistory));
-        }
-
-        function loadChatHistory() {
-            const saved = localStorage.getItem('chatHistory');
-            if (saved) {
-                try {
-                    state.chatHistory = JSON.parse(saved);
-                } catch (e) {
-                    console.log('Could not load history');
-                }
-            }
-        }
-
-        function showHistory() {
-            elements.historyList.innerHTML = '';
-
-            if (state.chatHistory.length === 0) {
-                elements.historyList.innerHTML = '<p style="text-align: center; color: var(--text-light); padding: 20px;">No chat history yet</p>';
-            } else {
-                state.chatHistory.forEach((item) => {
-                    const historyItem = document.createElement('div');
-                    historyItem.className = 'history-item';
-                    historyItem.innerHTML = `
-                        <div style="font-weight: 600; margin-bottom: 5px;">${item.message}</div>
-                        <div style="font-size: 12px; opacity: 0.6;">${item.timestamp}</div>
-                    `;
-                    historyItem.addEventListener('click', () => {
-                        elements.messageInput.value = item.fullMessage;
-                        closeHistory();
-                        elements.messageInput.focus();
-                    });
-                    elements.historyList.appendChild(historyItem);
-                });
-            }
-
-            elements.historyModal.classList.add('active');
-        }
-
-        function closeHistory() {
-            elements.historyModal.classList.remove('active');
-        }
-
-        // Auto-resize textarea
-        elements.messageInput.addEventListener('input', function() {
-            this.style.height = 'auto';
-            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+        themeBtn.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const dark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('dark', dark);
+            themeBtn.innerHTML = dark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
         });
 
-        // Initialize app
-        init();
+        // Send message
+        async function sendMessage() {
+            const text = inputField.value.trim();
+            if (!text) return;
+
+            // Show user message
+            const userMsg = document.createElement('div');
+            userMsg.className = 'message user';
+            userMsg.innerHTML = `<div class="message-content">${text}</div>`;
+            messagesDiv.appendChild(userMsg);
+            inputField.value = '';
+
+            // Show typing
+            const typingMsg = document.createElement('div');
+            typingMsg.className = 'message ai';
+            typingMsg.id = 'typing';
+            typingMsg.innerHTML = `<div class="message-content"><div class="typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div>`;
+            messagesDiv.appendChild(typingMsg);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+            try {
+                // Send to server
+                const response = await fetch('/api/webhook', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: text })
+                });
+
+                const data = await response.json();
+
+                // Remove typing
+                document.getElementById('typing').remove();
+
+                // Show AI response
+                const aiMsg = document.createElement('div');
+                aiMsg.className = 'message ai';
+                
+                // Extract response text from n8n
+                let responseText = data.response || data.message || data.text || JSON.stringify(data);
+                aiMsg.innerHTML = `<div class="message-content">${responseText}</div>`;
+                messagesDiv.appendChild(aiMsg);
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+            } catch (error) {
+                console.error(error);
+                document.getElementById('typing').remove();
+                const errMsg = document.createElement('div');
+                errMsg.className = 'message ai';
+                errMsg.innerHTML = `<div class="message-content">⚠️ Error: ${error.message}</div>`;
+                messagesDiv.appendChild(errMsg);
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            }
+        }
+
+        // Events
+        sendBtn.addEventListener('click', sendMessage);
+        inputField.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
     </script>
 </body>
 </html>
