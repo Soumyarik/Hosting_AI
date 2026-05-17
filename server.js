@@ -12,17 +12,17 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use(express.static('public'));
 
+// Serve index.html from root
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', message: 'Soumyajit AI Server is running' });
 });
 
-// Serve the main application
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
-// Webhook proxy endpoint (optional - for additional processing)
+// Webhook proxy endpoint
 app.post('/api/webhook', async (req, res) => {
   try {
     const { message, image, timestamp, platform } = req.body;
@@ -31,8 +31,7 @@ app.post('/api/webhook', async (req, res) => {
     console.log('Message:', message);
 
     // Forward to n8n webhook
-    const n8nWebhookUrl = process.env.N8N_WEBHOOK_URL || 
-      'https://n8n-production-a9be2.up.railway.app/webhook/bde39fec-3dc5-48bd-95d3-9b7402ae703b';
+    const n8nWebhookUrl = 'https://n8n-production-a9be2.up.railway.app/webhook/bde39fec-3dc5-48bd-95d3-9b7402ae703b';
 
     const response = await fetch(n8nWebhookUrl, {
       method: 'POST',
@@ -72,12 +71,12 @@ app.post('/api/voice', express.raw({ type: 'audio/*' }), async (req, res) => {
     const audioBuffer = req.body;
     console.log(`[${new Date().toISOString()}] Voice message received, size: ${audioBuffer.length} bytes`);
 
-    // Forward to n8n webhook (you can process audio here if needed)
-    const n8nWebhookUrl = process.env.N8N_WEBHOOK_URL || 
-      'https://n8n-production-a9be2.up.railway.app/webhook/bde39fec-3dc5-48bd-95d3-9b7402ae703b';
+    // Forward to n8n webhook
+    const n8nWebhookUrl = 'https://n8n-production-a9be2.up.railway.app/webhook/bde39fec-3dc5-48bd-95d3-9b7402ae703b';
 
+    const FormData = require('form-data');
     const formData = new FormData();
-    formData.append('audio', new Blob([audioBuffer], { type: 'audio/wav' }), 'voice.wav');
+    formData.append('audio', audioBuffer, 'voice.wav');
     formData.append('type', 'voice');
     formData.append('timestamp', new Date().toISOString());
 
@@ -117,7 +116,7 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
   console.log(`✅ Soumyajit's AI Server running on port ${PORT}`);
   console.log(`📍 Access at http://localhost:${PORT}`);
-  console.log(`🔌 Webhook URL: ${process.env.N8N_WEBHOOK_URL || 'Using default n8n URL'}`);
+  console.log(`🔌 Webhook: n8n connected`);
   console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
 });
 
