@@ -1,64 +1,124 @@
-
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+require('dotenv').config();
 
 const app = express();
+const PORT = process.env.PORT || 3000;
 
+// Middleware
 app.use(cors());
-app.use(express.json());
-app.use(express.static(__dirname));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
+app.use(express.static('public'));
 
-const WEBHOOK_URL =
-'https://n8n-production-a9be2.up.railway.app/webhook/bde39fec-3dc5-48bd-95d3-9b7402ae703b';
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.json({ status: 'OK', message: 'Soumyajit AI Server is running' });
+});
 
-app.post('/chat', async (req, res) => {
+// Serve the main application
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
+// Webhook proxy endpoint (optional - for additional processing)
+app.post('/api/webhook', async (req, res) => {
   try {
+    const { message, image, timestamp, platform } = req.body;
 
-    const response = await fetch(WEBHOOK_URL, {
+    console.log(`[${new Date().toISOString()}] Received request from ${platform}`);
+    console.log('Message:', message);
+
+    // Forward to n8n webhook
+    const n8nWebhookUrl = process.env.N8N_WEBHOOK_URL || 
+      'https://n8n-production-a9be2.up.railway.app/webhook/bde39fec-3dc5-48bd-95d3-9b7402ae703b';
+
+    const response = await fetch(n8nWebhookUrl, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        message: req.body.message
+        message,
+        image: image || null,
+        timestamp: timestamp || new Date().toISOString(),
+        platform,
+        source: 'soumyajit-ai-app'
       })
     });
 
-    const text = await response.text();
+    const data = await response.json();
 
-    let data;
-
-    try {
-      data = JSON.parse(text);
-    } catch {
-      data = {
-        response: text
-      };
-    }
-
-    res.json(data);
-
-  } catch (error) {
-
-    console.error(error);
-
-    res.status(500).json({
-      response: 'Server Error'
+    res.json({
+      success: true,
+      response: data.response || data.message || 'Request processed',
+      timestamp: new Date().toISOString()
     });
 
+  } catch (error) {
+    console.error('Webhook Error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to process request',
+      message: error.message
+    });
   }
-
 });
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+// Voice webhook endpoint
+app.post('/api/voice', express.raw({ type: 'audio/*' }), async (req, res) => {
+  try {
+    const audioBuffer = req.body;
+    console.log(`[${new Date().toISOString()}] Voice message received, size: ${audioBuffer.length} bytes`);
+
+    // Forward to n8n webhook (you can process audio here if needed)
+    const n8nWebhookUrl = process.env.N8N_WEBHOOK_URL || 
+      'https://n8n-production-a9be2.up.railway.app/webhook/bde39fec-3dc5-48bd-95d3-9b7402ae703b';
+
+    const formData = new FormData();
+    formData.append('audio', new Blob([audioBuffer], { type: 'audio/wav' }), 'voice.wav');
+    formData.append('type', 'voice');
+    formData.append('timestamp', new Date().toISOString());
+
+    const response = await fetch(n8nWebhookUrl, {
+      method: 'POST',
+      body: formData
+    });
+
+    const data = await response.json();
+
+    res.json({
+      success: true,
+      response: data.response || 'Voice message processed',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    console.error('Voice Processing Error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to process voice message'
+    });
+  }
 });
 
-const PORT = process.env.PORT || 3000;
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error('Error:', err);
+  res.status(500).json({
+    success: false,
+    error: 'Internal server error',
+    message: err.message
+  });
+});
 
+// Start server
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`✅ Soumyajit's AI Server running on port ${PORT}`);
+  console.log(`📍 Access at http://localhost:${PORT}`);
+  console.log(`🔌 Webhook URL: ${process.env.N8N_WEBHOOK_URL || 'Using default n8n URL'}`);
+  console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
 });
 
+module.exports = app;
