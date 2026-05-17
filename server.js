@@ -48,10 +48,34 @@ app.post('/api/webhook', async (req, res) => {
     });
 
     const data = await response.json();
+    console.log('N8N Response:', JSON.stringify(data, null, 2));
+
+    // Extract response from n8n - handle multiple formats
+    let responseText = '';
+    
+    if (typeof data === 'string') {
+      responseText = data;
+    } else if (data.response) {
+      responseText = data.response;
+    } else if (data.message) {
+      responseText = data.message;
+    } else if (data.output) {
+      responseText = data.output;
+    } else if (data.result) {
+      responseText = data.result;
+    } else if (data.text) {
+      responseText = data.text;
+    } else if (data.body && data.body.response) {
+      responseText = data.body.response;
+    } else if (Array.isArray(data) && data.length > 0) {
+      responseText = JSON.stringify(data[0]);
+    } else {
+      responseText = JSON.stringify(data);
+    }
 
     res.json({
       success: true,
-      response: data.response || data.message || 'Request processed',
+      response: responseText || 'Request processed',
       timestamp: new Date().toISOString()
     });
 
@@ -86,10 +110,34 @@ app.post('/api/voice', express.raw({ type: 'audio/*' }), async (req, res) => {
     });
 
     const data = await response.json();
+    console.log('N8N Voice Response:', JSON.stringify(data, null, 2));
+
+    // Extract response from n8n - handle multiple formats
+    let responseText = '';
+    
+    if (typeof data === 'string') {
+      responseText = data;
+    } else if (data.response) {
+      responseText = data.response;
+    } else if (data.message) {
+      responseText = data.message;
+    } else if (data.output) {
+      responseText = data.output;
+    } else if (data.result) {
+      responseText = data.result;
+    } else if (data.text) {
+      responseText = data.text;
+    } else if (data.body && data.body.response) {
+      responseText = data.body.response;
+    } else if (Array.isArray(data) && data.length > 0) {
+      responseText = JSON.stringify(data[0]);
+    } else {
+      responseText = JSON.stringify(data);
+    }
 
     res.json({
       success: true,
-      response: data.response || 'Voice message processed',
+      response: responseText || 'Voice message processed',
       timestamp: new Date().toISOString()
     });
 
@@ -97,7 +145,8 @@ app.post('/api/voice', express.raw({ type: 'audio/*' }), async (req, res) => {
     console.error('Voice Processing Error:', error);
     res.status(500).json({
       success: false,
-      error: 'Failed to process voice message'
+      error: 'Failed to process voice message',
+      message: error.message
     });
   }
 });
